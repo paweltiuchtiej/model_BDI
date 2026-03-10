@@ -1,0 +1,371 @@
+[33mcommit 73294f65c81c41af9d97862d21f39f3bb454d36c[m[33m ([m[1;31mupstream/main[m[33m)[m
+Author: HinoYoseii <167854087+HinoYoseii@users.noreply.github.com>
+Date:   Thu Feb 19 15:53:02 2026 +0100
+
+    nie pamiętam co tu zmieniałam ale chce mieć to wrzucone
+
+[1mdiff --git a/BDI_model.ipynb b/BDI_model.ipynb[m
+[1mindex c2deb0d..6e71900 100644[m
+[1m--- a/BDI_model.ipynb[m
+[1m+++ b/BDI_model.ipynb[m
+[36m@@ -2,7 +2,7 @@[m
+   "cells": [[m
+     {[m
+       "cell_type": "code",[m
+[31m-      "execution_count": 69,[m
+[32m+[m[32m      "execution_count": 169,[m
+       "metadata": {[m
+         "collapsed": false[m
+       },[m
+[36m@@ -15,7 +15,7 @@[m
+     },[m
+     {[m
+       "cell_type": "code",[m
+[31m-      "execution_count": 70,[m
+[32m+[m[32m      "execution_count": 170,[m
+       "metadata": {[m
+         "collapsed": false[m
+       },[m
+[36m@@ -28,29 +28,9 @@[m
+     },[m
+     {[m
+       "cell_type": "code",[m
+[31m-      "execution_count": null,[m
+[32m+[m[32m      "execution_count": 206,[m
+       "metadata": {},[m
+[31m-      "outputs": [[m
+[31m-        {[m
+[31m-          "name": "stdout",[m
+[31m-          "output_type": "stream",[m
+[31m-          "text": [[m
+[31m-            "                   NAZW            X            Y       Z\n",[m
+[31m-            "0    59+971.37/MS-100/1  5529957.113  7416074.676  243.30\n",[m
+[31m-            "1   59+971.37/MS-100/10  5530020.195  7416063.026  242.59\n",[m
+[31m-            "2   59+971.37/MS-100/11  5530031.338  7416040.810  242.26\n",[m
+[31m-            "3   59+971.37/MS-100/12  5530038.455  7416032.803  242.10\n",[m
+[31m-            "4   59+971.37/MS-100/14  5530045.859  7416041.031  241.88\n",[m
+[31m-            "5    59+971.37/MS-100/2  5529967.167  7416072.532  243.10\n",[m
+[31m-            "6    59+971.37/MS-100/3  5529959.407  7416085.434  243.18\n",[m
+[31m-            "7    59+971.37/MS-100/4  5529969.461  7416083.290  243.10\n",[m
+[31m-            "8    59+971.37/MS-100/6  5530001.722  7416059.969  242.85\n",[m
+[31m-            "9    59+971.37/MS-100/7  5530015.488  7416053.081  242.60\n",[m
+[31m-            "10   59+971.37/MS-100/8  5529991.197  7416077.535  242.99\n",[m
+[31m-            "11   59+971.37/MS-100/9  5530006.474  7416069.891  243.00\n"[m
+[31m-          ][m
+[31m-        }[m
+[31m-      ],[m
+[32m+[m[32m      "outputs": [],[m
+       "source": [[m
+         "# SELECT Z BAZY\n",[m
+         "import numpy as np\n",[m
+[36m@@ -128,12 +108,20 @@[m
+         "WHERE gs_lit.NAZW LIKE '%59+971.37%' AND gs_lit.nazw NOT LIKE '59+971.37/MS-100/13' AND gs_lit.seria is not NULL GROUP BY gs_otwory.NAZW\n",[m
+         "\"\"\")\n",[m
+         "\n",[m
+[32m+[m[32m        "serie = text(\"\"\"\n",[m
+[32m+[m[32m        "SELECT distinct \n",[m
+[32m+[m[32m        "concat(\"S_top_\",gs_lit.seria) AS seria\n",[m
+[32m+[m[32m        "FROM gs_lit \n",[m
+[32m+[m[32m        "WHERE seria IS NOT null;\n",[m
+[32m+[m[32m        "\"\"\")\n",[m
+[32m+[m[32m        "\n",[m
+         "with engine.connect() as conn:\n",[m
+         "    df_surface_strop = pd.read_sql(surface_strop, conn)\n",[m
+         "    df_surface_spag = pd.read_sql(surface_spag, conn)\n",[m
+         "    # df_orient_strop = pd.read_sql(orient_strop, conn)\n",[m
+         "    df_orient_spag = pd.read_sql(orient_spag, conn)\n",[m
+         "    df_boreholes = pd.read_sql(boreholes, conn)\n",[m
+[32m+[m[32m        "    df_serie = pd.read_sql(serie, conn)\n",[m
+         "\n",[m
+         "\n",[m
+         "df_surface = pd.concat(\n",[m
+[36m@@ -149,49 +137,25 @@[m
+         "df_surface[['X','Y','Z','nugget']] = df_surface[['X','Y','Z','nugget']].astype(float)\n",[m
+         "df_surface['surface'] = df_surface['surface'].astype(str)\n",[m
+         "df_orient[['X','Y','Z','G_x','G_y','G_z']] = \\\n",[m
+[31m-        "    df_orient[['X','Y','Z','G_x','G_y','G_z']].astype(float)\n",[m
+[31m-        "\n",[m
+[31m-        "print(df_boreholes)"[m
+[32m+[m[32m        "    df_orient[['X','Y','Z','G_x','G_y','G_z']].astype(float)\n"[m
+       ][m
+     },[m
+     {[m
+       "cell_type": "code",[m
+[31m-      "execution_count": 79,[m
+[32m+[m[32m      "execution_count": null,[m
+       "metadata": {},[m
+       "outputs": [[m
+         {[m
+[31m-          "name": "stdout",[m
+[31m-          "output_type": "stream",[m
+[31m-          "text": [[m
+[31m-            "Setting Backend To: AvailableBackends.PYTORCH\n",[m
+[31m-            "Chunking done: 35 chunks\n",[m
+[31m-            "Chunking done: 28 chunks\n",[m
+[31m-            "Chunking done: 31 chunks\n",[m
+[31m-            "Chunking done: 25 chunks\n",[m
+[31m-            "Chunking done: 28 chunks\n",[m
+[31m-            "Chunking done: 240 chunks\n",[m
+[31m-            "Chunking done: 193 chunks\n",[m
+[31m-            "Chunking done: 25 chunks\n",[m
+[31m-            "Chunking done: 209 chunks\n",[m
+[31m-            "Chunking done: 168 chunks\n",[m
+[31m-            "Chunking done: 18 chunks\n",[m
+[31m-            "Chunking done: 15 chunks\n",[m
+[31m-            "Chunking done: 7 chunks\n",[m
+[31m-            "Chunking done: 6 chunks\n"[m
+[32m+[m[32m          "ename": "ValueError",[m
+[32m+[m[32m          "evalue": "Element with name S_top_1 not found in the structural frame.",[m
+[32m+[m[32m          "output_type": "error",[m
+[32m+[m[32m          "traceback": [[m
+[32m+[m[32m            "\u001b[31m---------------------------------------------------------------------------\u001b[39m",[m
+[32m+[m[32m            "\u001b[31mValueError\u001b[39m                                Traceback (most recent call last)",[m
+[32m+[m[32m            "\u001b[36mCell\u001b[39m\u001b[36m \u001b[39m\u001b[32mIn[209]\u001b[39m\u001b[32m, line 81\u001b[39m\n\u001b[32m     79\u001b[39m \u001b[38;5;28;01mfor\u001b[39;00m color, names \u001b[38;5;129;01min\u001b[39;00m color_map.items():\n\u001b[32m     80\u001b[39m     \u001b[38;5;28;01mfor\u001b[39;00m name \u001b[38;5;129;01min\u001b[39;00m names:\n\u001b[32m---> \u001b[39m\u001b[32m81\u001b[39m         \u001b[43mgeo_model\u001b[49m\u001b[43m.\u001b[49m\u001b[43mstructural_frame\u001b[49m\u001b[43m.\u001b[49m\u001b[43mget_element_by_name\u001b[49m\u001b[43m(\u001b[49m\u001b[43mname\u001b[49m\u001b[43m)\u001b[49m.color = color\n\u001b[32m     82\u001b[39m geo_model.structural_frame.basement_color = \u001b[33m\"\u001b[39m\u001b[33m#ffffff\u001b[39m\u001b[33m\"\u001b[39m\n\u001b[32m     84\u001b[39m geo_model.grid.rescale_factor = [\u001b[32m1\u001b[39m, \u001b[32m1\u001b[39m, \u001b[32m1\u001b[39m]\n",[m
+[32m+[m[32m            "\u001b[36mFile \u001b[39m\u001b[32mc:\\Users\\sylle\\AppData\\Local\\Programs\\Python\\Python311\\Lib\\site-packages\\gempy\\core\\data\\structural_frame.py:130\u001b[39m, in \u001b[36mStructuralFrame.get_element_by_name\u001b[39m\u001b[34m(self, element_name)\u001b[39m\n\u001b[32m    128\u001b[39m element = \u001b[38;5;28mnext\u001b[39m(valid_elements, \u001b[38;5;28;01mNone\u001b[39;00m)\n\u001b[32m    129\u001b[39m \u001b[38;5;28;01mif\u001b[39;00m element \u001b[38;5;129;01mis\u001b[39;00m \u001b[38;5;28;01mNone\u001b[39;00m:\n\u001b[32m--> \u001b[39m\u001b[32m130\u001b[39m     \u001b[38;5;28;01mraise\u001b[39;00m \u001b[38;5;167;01mValueError\u001b[39;00m(\u001b[33mf\u001b[39m\u001b[33m\"\u001b[39m\u001b[33mElement with name \u001b[39m\u001b[38;5;132;01m{\u001b[39;00melement_name\u001b[38;5;132;01m}\u001b[39;00m\u001b[33m not found in the structural frame.\u001b[39m\u001b[33m\"\u001b[39m)\n\u001b[32m    131\u001b[39m \u001b[38;5;28;01mreturn\u001b[39;00m element\n",[m
+[32m+[m[32m            "\u001b[31mValueError\u001b[39m: Element with name S_top_1 not found in the structural frame."[m
+           ][m
+[31m-        },[m
+[31m-        {[m
+[31m-          "data": {[m
+[31m-            "text/html": [[m
+[31m-              "<b>Solutions:</b> 6 Octree Levels, 17 DualContouringMeshes"[m
+[31m-            ],[m
+[31m-            "text/plain": [[m
+[31m-              "Solutions(6 Octree Levels, 17 DualContouringMeshes)"[m
+[31m-            ][m
+[31m-          },[m
+[31m-          "execution_count": 79,[m
+[31m-          "metadata": {},[m
+[31m-          "output_type": "execute_result"[m
+         }[m
+       ],[m
+       "source": [[m
+[36m@@ -288,28 +252,18 @@[m
+     },[m
+     {[m
+       "cell_type": "code",[m
+[31m-      "execution_count": 80,[m
+[32m+[m[32m      "execution_count": 185,[m
+       "metadata": {},[m
+       "outputs": [[m
+[31m-        {[m
+[31m-          "name": "stderr",[m
+[31m-          "output_type": "stream",[m
+[31m-          "text": [[m
+[31m-            "C:\\Users\\sylle\\AppData\\Local\\Temp\\ipykernel_2704\\3315580916.py:115: PyVistaDeprecationWarning: `xlabel` is deprecated. Use `xtitle` instead.\n",[m
+[31m-            "  p.show_bounds(xlabel=\"Distance along profile [m]\",zlabel=\"Elevation [m]\",grid=\"front\",location=\"outer\")\n",[m
+[31m-            "C:\\Users\\sylle\\AppData\\Local\\Temp\\ipykernel_2704\\3315580916.py:115: PyVistaDeprecationWarning: `zlabel` is deprecated. Use `ztitle` instead.\n",[m
+[31m-            "  p.show_bounds(xlabel=\"Distance along profile [m]\",zlabel=\"Elevation [m]\",grid=\"front\",location=\"outer\")\n"[m
+[31m-          ][m
+[31m-        },[m
+         {[m
+           "data": {[m
+             "application/vnd.jupyter.widget-view+json": {[m
+[31m-              "model_id": "6c0185ddca334f25a7544cc5a6eb7dff",[m
+[32m+[m[32m              "model_id": "1e82ca51567f43f8a51b7317fb52fe0f",[m
+               "version_major": 2,[m
+               "version_minor": 0[m
+             },[m
+             "text/plain": [[m
+[31m-              "Widget(value='<iframe src=\"http://localhost:51812/index.html?ui=P_0x2122bd1e190_39&reconnect=auto\" class=\"pyvi…"[m
+[32m+[m[32m              "Widget(value='<iframe src=\"http://localhost:51812/index.html?ui=P_0x21668b18dd0_157&reconnect=auto\" class=\"pyv…"[m
+             ][m
+           },[m
+           "metadata": {},[m
+[36m@@ -319,13 +273,12 @@[m
+       "source": [[m
+         "import numpy as np\n",[m
+         "import pyvista as pv\n",[m
+[31m-        "import pandas as pd\n",[m
+[32m+[m[32m        "import matplotlib.colors as mcolors\n",[m
+         "\n",[m
+         "def chainage_along_polyline(points, polyline):\n",[m
+         "    seg_vecs = np.diff(polyline, axis=0)\n",[m
+         "    seg_lens = np.linalg.norm(seg_vecs, axis=1)\n",[m
+         "    seg_dirs = seg_vecs / seg_lens[:, None]\n",[m
+[31m-        "\n",[m
+         "    cumlen = np.concatenate([[0], np.cumsum(seg_lens)])\n",[m
+         "\n",[m
+         "    s = np.zeros(len(points))\n",[m
+[36m@@ -342,7 +295,6 @@[m
+         "            proj = np.dot(pt - p0, t)\n",[m
+         "            proj_clamped = np.clip(proj, 0, L)\n",[m
+         "            closest = p0 + proj_clamped * t\n",[m
+[31m-        "\n",[m
+         "            dist = np.linalg.norm(pt - closest)\n",[m
+         "\n",[m
+         "            if dist < best_dist:\n",[m
+[36m@@ -353,37 +305,21 @@[m
+         "\n",[m
+         "    return s\n",[m
+         "\n",[m
+[31m-        "def distance_to_polyline(points, polyline):\n",[m
+[31m-        "    d = np.zeros(len(points))\n",[m
+[31m-        "\n",[m
+[31m-        "    for i, pt in enumerate(points):\n",[m
+[31m-        "        best = np.inf\n",[m
+[31m-        "        for j in range(len(polyline) - 1):\n",[m
+[31m-        "            p1, p2 = polyline[j], polyline[j + 1]\n",[m
+[31m-        "            t = p2 - p1\n",[m
+[31m-        "            L = np.linalg.norm(t)\n",[m
+[31m-        "            t /= L\n",[m
+[31m-        "            proj = np.clip(np.dot(pt - p1, t), 0, L)\n",[m
+[31m-        "            closest = p1 + proj * t\n",[m
+[31m-        "            best = min(best, np.linalg.norm(pt - closest))\n",[m
+[31m-        "        d[i] = best\n",[m
+[31m-        "\n",[m
+[31m-        "    return d\n",[m
+[31m-        "\n",[m
+[31m-        "sf = geo_model.structural_frame\n",[m
+[31m-        "cmap = [s.color for s in sf.surfaces]\n",[m
+[32m+[m[32m        "# Kolory z modelu\n",[m
+[32m+[m[32m        "surfaces = geo_model.structural_frame.surfaces\n",[m
+[32m+[m[32m        "colors_hex = [s.color for s in surfaces]\n",[m
+[32m+[m[32m        "colors_rgb = np.array([mcolors.to_rgb(c) for c in colors_hex])\n",[m
+         "\n",[m
+[32m+[m[32m        "# Dane z modelu\n",[m
+[32m+[m[32m        "ra = geo_model.solutions.raw_arrays\n",[m
+         "rg = geo_model.grid.regular_grid\n",[m
+         "nx, ny, nz = rg.resolution\n",[m
+         "\n",[m
+         "points = rg.values\n",[m
+[31m-        "\n",[m
+         "X = points[:, 0].reshape((nx, ny, nz), order=\"F\")\n",[m
+         "Y = points[:, 1].reshape((nx, ny, nz), order=\"F\")\n",[m
+         "Z = points[:, 2].reshape((nx, ny, nz), order=\"F\")\n",[m
+         "\n",[m
+[31m-        "ra = geo_model.solutions.raw_arrays\n",[m
+[31m-        "\n",[m
+         "lith = ra.lith_block.reshape((nx, ny, nz), order=\"F\")\n",[m
+         "scalar = ra.scalar_field_matrix[0].reshape((nx, ny, nz), order=\"F\")\n",[m
+         "\n",[m
+[36m@@ -391,24 +327,28 @@[m
+         "grid[\"lithology\"] = lith.flatten(order=\"F\")\n",[m
+         "grid[\"scalar\"] = scalar.flatten(order=\"F\")\n",[m
+         "\n",[m
+[32m+[m[32m        "# Polilinia przekroju\n",[m
+         "polyline = np.array([\n",[m
+[31m-        "[5530045.859,7416041.031,240],\n",[m
+[31m-        "[5530031.338,7416040.81,240],\n",[m
+[31m-        "[5530020.195,7416063.026,240]\n",[m
+[32m+[m[32m        "    [5530045.859, 7416041.031, 240],\n",[m
+[32m+[m[32m        "    [5530031.338, 7416040.81,  240],\n",[m
+[32m+[m[32m        "    [5530020.195, 7416063.026, 240]\n",[m
+         "], dtype=float)\n",[m
+         "\n",[m
+         "npts = polyline.shape[0]\n",[m
+[31m-        "\n",[m
+[31m-        "cells = np.hstack([\n",[m
+[31m-        "    [npts],\n",[m
+[31m-        "    np.arange(npts)\n",[m
+[31m-        "]).astype(np.int64)\n",[m
+[31m-        "\n",[m
+[32m+[m[32m        "cells = np.hstack([[npts], np.arange(npts)]).astype(np.int64)\n",[m
+         "line = pv.PolyData(polyline, lines=cells)\n",[m
+         "\n",[m
+[32m+[m[32m        "# Przekrój\n",[m
+         "curtain = grid.slice_along_line(line)\n",[m
+[31m-        "pts = curtain.points.copy()\n",[m
+         "\n",[m
+[32m+[m[32m        "# Przypisanie kolorów RGB (tak samo jak w 3D)\n",[m
+[32m+[m[32m        "lith_curtain = curtain[\"lithology\"].astype(int)\n",[m
+[32m+[m[32m        "lith_ids_curtain = np.clip(lith_curtain - 1, 0, len(colors_rgb) - 1)\n",[m
+[32m+[m[32m        "rgb_curtain = colors_rgb[lith_ids_curtain]\n",[m
+[32m+[m[32m        "curtain.point_data[\"rgb\"] = rgb_curtain\n",[m
+[32m+[m[32m        "\n",[m
+[32m+[m[32m        "# Transformacja do układu 2D (chainage vs elevation)\n",[m
+[32m+[m[32m        "pts = curtain.points.copy()\n",[m
+         "s_coord = chainage_along_polyline(pts, polyline)\n",[m
+         "z_coord = pts[:, 2]\n",[m
+         "\n",[m
+[36m@@ -418,38 +358,38 @@[m
+         "    z_coord\n",[m
+         "])\n",[m
+         "\n",[m
+[31m-        "sfsp = geo_model.solutions.raw_arrays.scalar_field_at_surface_points\n",[m
+[31m-        "\n",[m
+[31m-        "levels = np.unique(sfsp[0])\n",[m
+[31m-        "\n",[m
+[32m+[m[32m        "# Wykres\n",[m
+         "p = pv.Plotter()\n",[m
+[31m-        "\n",[m
+         "p.enable_parallel_projection()\n",[m
+         "p.view_xz()\n",[m
+         "\n",[m
+[31m-        "p.add_mesh(curtain, scalars=\"lithology\", cmap=cmap, categories=False, interpolate_before_map=False, show_edges=False)\n",[m
+[31m-        "\n",[m
+[31m-        "p.set_scale(xscale=1, yscale=1, zscale=1)\n",[m
+[32m+[m[32m        "p.add_mesh(curtain, scalars=\"rgb\", rgb=True, interpolate_before_map=False, show_edges=False)\n",[m
+         "\n",[m
+[31m-        "p.show_bounds(xlabel=\"Distance along profile [m]\",zlabel=\"Elevation [m]\",grid=\"front\",location=\"outer\")\n",[m
+[32m+[m[32m        "p.show_bounds(\n",[m
+[32m+[m[32m        "    xtitle=\"Distance along profile [m]\",\n",[m
+[32m+[m[32m        "    ztitle=\"Elevation [m]\",\n",[m
+[32m+[m[32m        "    grid=\"front\",\n",[m
+[32m+[m[32m        "    location=\"outer\"\n",[m
+[32m+[m[32m        ")\n",[m
+         "\n",[m
+[32m+[m[32m        "p.reset_camera()\n",[m
+         "p.show()"[m
+       ][m
+     },[m
+     {[m
+       "cell_type": "code",[m
+[31m-      "execution_count": null,[m
+[32m+[m[32m      "execution_count": 174,[m
+       "metadata": {},[m
+       "outputs": [[m
+         {[m
+           "data": {[m
+             "application/vnd.jupyter.widget-view+json": {[m
+[31m-              "model_id": "1e6d873d6da9416ebf7fb2a09466a6c1",[m
+[32m+[m[32m              "model_id": "87815ed5bde04663b61a74a51a8e9f04",[m
+               "version_major": 2,[m
+               "version_minor": 0[m
+             },[m
+             "text/plain": [[m
+[31m-              "Widget(value='<iframe src=\"http://localhost:51812/index.html?ui=P_0x2147acd5c50_86&reconnect=auto\" class=\"pyvi…"[m
+[32m+[m[32m              "Widget(value='<iframe src=\"http://localhost:51812/index.html?ui=P_0x2164e3e6a90_154&reconnect=auto\" class=\"pyv…"[m
+             ][m
+           },[m
+           "metadata": {},[m
+[36m@@ -468,8 +408,8 @@[m
+         "lith = ra.lith_block.reshape((nx, ny, nz), order=\"F\")\n",[m
+         "\n",[m
+         "surfaces = geo_model.structural_frame.surfaces\n",[m
+[31m-        "colors_hex = [s.color for s in surfaces]\n",[m
+         "\n",[m
+[32m+[m[32m        "colors_hex = [s.color for s in surfaces]\n",[m
+         "colors_rgb = np.array([mcolors.to_rgb(c) for c in colors_hex])\n",[m
+         "\n",[m
+         "lith_ids = np.clip(lith.astype(int) - 1, 0, len(colors_rgb) - 1)\n",[m
+[36m@@ -542,18 +482,18 @@[m
+     },[m
+     {[m
+       "cell_type": "code",[m
+[31m-      "execution_count": 126,[m
+[32m+[m[32m      "execution_count": null,[m
+       "metadata": {},[m
+       "outputs": [[m
+         {[m
+           "data": {[m
+             "application/vnd.jupyter.widget-view+json": {[m
+[31m-              "model_id": "751d349eb98b47ba9c6a0a5fe96a1d28",[m
+[32m+[m[32m              "model_id": "43c64942375d412b8c6a12567144370a",[m
+               "version_major": 2,[m
+               "version_minor": 0[m
+             },[m
+             "text/plain": [[m
+[31m-              "Widget(value='<iframe src=\"http://localhost:51812/index.html?ui=P_0x215023c8b90_112&reconnect=auto\" class=\"pyv…"[m
+[32m+[m[32m              "Widget(value='<iframe src=\"http://localhost:51812/index.html?ui=P_0x213592908d0_156&reconnect=auto\" class=\"pyv…"[m
+             ][m
+           },[m
+           "metadata": {},[m
+[36m@@ -567,7 +507,6 @@[m
+         "import matplotlib.colors as mcolors\n",[m
+         "import pyvista as pv\n",[m
+         "\n",[m
+[31m-        "\n",[m
+         "lith_ids = lith.astype(int) - 1\n",[m
+         "lith_ids = lith_ids.flatten(order=\"F\")\n",[m
+         "\n",[m
