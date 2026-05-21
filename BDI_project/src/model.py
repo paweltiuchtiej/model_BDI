@@ -34,7 +34,7 @@ def model(df_surface, df_orient, zwietrzelina_list, rzeczne_list, rzeczne_org_1,
             7416085.434 + 5,
             213, 234
         ],
-        refinement=4,
+        refinement=6,
         structural_frame=structural_frame
     )
 
