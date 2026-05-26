@@ -21,7 +21,7 @@ def merge_db_data():
         FROM gs_lit
         INNER JOIN gs_otwory
         ON gs_lit.nazw = gs_otwory.nazw
-        WHERE gs_lit.NAZW LIKE '%59+971.37%' AND gs_lit.nazw NOT LIKE '59+971.37/MS-100/13'  AND gs_lit.seria is not null
+        WHERE gs_lit.seria is not null
         GROUP BY surface, gs_otwory.nazw
     """)
 
@@ -35,7 +35,7 @@ def merge_db_data():
         FROM gs_lit
         INNER JOIN gs_otwory
         ON gs_lit.nazw = gs_otwory.nazw 
-        WHERE gs_lit.NAZW LIKE '%59+971.37%' AND gs_lit.nazw NOT LIKE '59+971.37/MS-100/13' AND gs_lit.seria IN (2001, 2002, 202, 203, 2102, 2103, 204, 205, 206, 207, 208)
+        WHERE gs_lit.seria IN (2001, 2002, 202, 203, 2102, 2103, 204, 205, 206, 207, 208)
         GROUP BY surface, gs_otwory.nazw
     """)
 
@@ -79,7 +79,6 @@ def merge_db_data():
         WHERE gs_lit.NAZW LIKE '%59+971.37%' AND gs_lit.nazw NOT LIKE '59+971.37/MS-100/13' AND gs_lit.seria is not NULL
         GROUP BY surface, gs_otwory.nazw
     """)
-
 
     orient_spag = text("""
         SELECT
@@ -165,31 +164,6 @@ def merge_db_data():
         ORDER BY p.nazwa, p.nr;
     """)
 
-
-    with engine.connect() as conn:
-        df_surface_strop = pd.read_sql(surface_strop, conn)
-        df_surface_spag = pd.read_sql(surface_spag, conn)
-        df_soczewki_razem = pd.read_sql(soczewki_razem,conn) 
-        df_orient_strop = pd.read_sql(orient_strop, conn)
-        df_orient_spag = pd.read_sql(orient_spag, conn)
-        df_orient_soczewki_razem = pd.read_sql(orient_soczewki_razem, conn)
-        df_boreholes = pd.read_sql(boreholes, conn)
-        df_przekroje_z_otworami = pd.read_sql(przekroje_z_otworami, conn)
-
-    df_surface = pd.concat(
-        [df_surface_strop, df_surface_spag, df_soczewki_razem],
-        ignore_index=True
-    )
-
-    df_orient = pd.concat(
-        [df_orient_strop, df_orient_spag, df_orient_soczewki_razem], #
-        ignore_index=True
-    )
-
-    df_surface[['X','Y','Z','nugget']] = df_surface[['X','Y','Z', 'nugget']].astype(float)
-    df_surface['surface'] = df_surface['surface'].astype(str)
-    df_orient[['X','Y','Z','G_x','G_y','G_z']] = df_orient[['X','Y','Z','G_x','G_y','G_z']].astype(float)
-    
     otwory_litologia = text("""
         WITH ordered AS (
             SELECT 
@@ -220,9 +194,31 @@ def merge_db_data():
         ORDER BY NAZW, strop_from;
     """)
 
-    print("jeszcze poz mia")
+
     with engine.connect() as conn:
+        df_surface_strop = pd.read_sql(surface_strop, conn)
+        df_surface_spag = pd.read_sql(surface_spag, conn)
+        df_soczewki_razem = pd.read_sql(soczewki_razem,conn) 
+        df_orient_strop = pd.read_sql(orient_strop, conn)
+        df_orient_spag = pd.read_sql(orient_spag, conn)
+        df_orient_soczewki_razem = pd.read_sql(orient_soczewki_razem, conn)
+        df_boreholes = pd.read_sql(boreholes, conn)
+        df_przekroje_z_otworami = pd.read_sql(przekroje_z_otworami, conn)
         df_otwory_z_litologia = pd.read_sql(otwory_litologia, conn)
+
+    df_surface = pd.concat(
+        [df_surface_strop, df_surface_spag, df_soczewki_razem],
+        ignore_index=True
+    )
+
+    df_orient = pd.concat(
+        [df_orient_strop, df_orient_spag, df_orient_soczewki_razem],
+        ignore_index=True
+    )
+
+    df_surface[['X','Y','Z','nugget']] = df_surface[['X','Y','Z', 'nugget']].astype(float)
+    df_surface['surface'] = df_surface['surface'].astype(str)
+    df_orient[['X','Y','Z','G_x','G_y','G_z']] = df_orient[['X','Y','Z','G_x','G_y','G_z']].astype(float)
 
     return df_surface, df_orient, df_boreholes, df_przekroje_z_otworami, df_otwory_z_litologia
 

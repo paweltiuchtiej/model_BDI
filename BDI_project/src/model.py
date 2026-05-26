@@ -1,5 +1,4 @@
 import gempy as gp
-import gempy_viewer as gpv
 import torch
 
 def model(df_surface, df_orient, zwietrzelina_list, rzeczne_list, rzeczne_org_1, rzeczne_org_2, color_map):
@@ -48,14 +47,6 @@ def model(df_surface, df_orient, zwietrzelina_list, rzeczne_list, rzeczne_org_1,
 
     gp.add_structural_group(
         model=geo_model,
-        group_index=3,
-        structural_group_name="rzeczne1",
-        structural_relation=gp.data.StackRelationType.ERODE,
-        elements=[geo_model.structural_frame.get_element_by_name(name) for name in rzeczne_list]
-    )
-
-    gp.add_structural_group(
-        model=geo_model,
         group_index=1,
         structural_group_name="rzeczne2",
         structural_relation=gp.data.StackRelationType.ERODE,
@@ -68,6 +59,14 @@ def model(df_surface, df_orient, zwietrzelina_list, rzeczne_list, rzeczne_org_1,
         structural_group_name="rzeczne3",
         structural_relation=gp.data.StackRelationType.ERODE,
         elements=[geo_model.structural_frame.get_element_by_name(name) for name in rzeczne_org_2]
+    )
+
+    gp.add_structural_group(
+        model=geo_model,
+        group_index=3,
+        structural_group_name="rzeczne1",
+        structural_relation=gp.data.StackRelationType.ERODE,
+        elements=[geo_model.structural_frame.get_element_by_name(name) for name in rzeczne_list]
     )
 
     # gp.add_structural_group(
@@ -97,16 +96,15 @@ def model(df_surface, df_orient, zwietrzelina_list, rzeczne_list, rzeczne_org_1,
 
     geo_model.grid.rescale_factor = [1, 1, 1]
 
-    print(torch.cuda.current_device())
-    print(torch.cuda.get_device_name(0))
-    USE_GPU = torch.cuda.is_available()
-    print("CUDA available:", USE_GPU)
-    print(torch.get_default_dtype())
-    torch.set_default_dtype(torch.float32)
-
+    # print(torch.cuda.current_device())
+    # print(torch.cuda.get_device_name(0))
+    # print("CUDA available:", torch.cuda.is_available())
+    # print(torch.get_default_dtype())
+    torch.set_default_dtype(torch.float16)
     geo_model.interpolation_options.kernel_options.use_gpu = True
     # geo_model.interpolation_options.evaluation_options.verbose = True
-
+    geo_model.interpolation_options.evaluation_options.number_octree_levels_surface = 3  # teoretycznie im mniejszy tym czas powinien być krótszy ale na razie z moich testów wyszło że z zakresu <2,4> to dla 3 jest najkrótsze
+    
     with torch.no_grad():
         gp.compute_model(
             geo_model,
