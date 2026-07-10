@@ -169,22 +169,29 @@ def plot_model_3d(geo_model, df_przekroje_z_otworami, df_boreholes, nazwa_przekr
         # Model z przekrojem
         pl.add_mesh(grid_exag, scalars="rgb", rgb=True, opacity=0.15, show_edges=False)
         pl.add_mesh(curtain_3d, scalars="rgb", rgb=True, opacity=1.0, show_edges=False)
+    
     else:
-        # Jeżeli nie ma wybranego przekroju to dodaje się widget do przycinania modelu
-        actor = pl.add_mesh(grid_exag, scalars="rgb", rgb=True, opacity=0.8, show_edges=False)
-
         def clip_plane(normal, origin):
             clipped = grid_exag.clip(normal=normal, origin=origin)
-            # Reassign rgb colors after clipping
+
             lith_ids = np.clip(clipped["lithology"].astype(int) - 1, 0, len(colors_rgb) - 1)
-            clipped.point_data["rgb"] = colors_rgb[lith_ids]
-            actor.mapper.SetInputData(clipped)
+            rgb_uint8 = (np.clip(colors_rgb[lith_ids], 0, 1) * 255).astype(np.uint8)
+            clipped.point_data["rgb"] = rgb_uint8
+
+            output.copy_from(clipped)
+
+        output = grid_exag.clip(normal=(1, 0, 0), origin=grid_exag.center)
+        lith_ids0 = np.clip(output["lithology"].astype(int) - 1, 0, len(colors_rgb) - 1)
+        output.point_data["rgb"] = (np.clip(colors_rgb[lith_ids0], 0, 1) * 255).astype(np.uint8)
+
+        pl.add_mesh(output, scalars="rgb", rgb=True, opacity=1, show_edges=False)
 
         pl.add_plane_widget(
             clip_plane,
             normal=(1, 0, 0),
             origin=grid_exag.center,
-            normal_rotation=False
+            normal_rotation=False,
+            bounds=grid_exag.bounds
         )
 
     z_min = grid_exag.bounds[4]
@@ -193,8 +200,8 @@ def plot_model_3d(geo_model, df_przekroje_z_otworami, df_boreholes, nazwa_przekr
         add_borehole_3d(pl, row, z_min, z_max, scale_xy)
 
     pl.show_grid(xtitle="X [m]", ytitle="Y [m]", ztitle="Z [m]", font_size=10)
-    add_surface_points_3d(pl, df_surface, scale_xy, scale_z)
-    add_orientations_3d(pl, df_orient, scale_xy, scale_z)
+    # add_surface_points_3d(pl, df_surface, scale_xy, scale_z)
+    # add_orientations_3d(pl, df_orient, scale_xy, scale_z)
     pl.show()
 
 # --------------------------------------------------------------------------------

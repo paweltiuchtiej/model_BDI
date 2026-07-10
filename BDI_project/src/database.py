@@ -1,7 +1,5 @@
 # SELECT Z BAZY
-import numpy as np
 import pandas as pd
-import sqlalchemy
 from sqlalchemy import create_engine
 from sqlalchemy import text
 
@@ -76,7 +74,7 @@ def merge_db_data():
         FROM gs_lit
         INNER JOIN gs_otwory
         ON gs_lit.nazw = gs_otwory.nazw 
-        WHERE gs_lit.NAZW LIKE '%59+971.37%' AND gs_lit.nazw NOT LIKE '59+971.37/MS-100/13' AND gs_lit.seria is not NULL
+        WHERE gs_lit.seria is not NULL
         GROUP BY surface, gs_otwory.nazw
     """)
 
@@ -93,7 +91,7 @@ def merge_db_data():
         FROM gs_lit
         INNER JOIN gs_otwory
         ON gs_lit.nazw = gs_otwory.nazw 
-        WHERE gs_lit.NAZW LIKE '%59+971.37%' AND gs_lit.nazw NOT LIKE '59+971.37/MS-100/13' AND gs_lit.seria IN (2001, 2002, 202, 203, 2102, 2103, 204, 205, 206, 207, 208)
+        WHERE gs_lit.seria IN (2001, 2002, 202, 203, 2102, 2103, 204, 205, 206, 207, 208)
         GROUP BY surface, gs_otwory.nazw
     """)
 
@@ -133,7 +131,8 @@ def merge_db_data():
         FROM gs_lit
         INNER JOIN gs_otwory
         ON gs_lit.nazw = gs_otwory.nazw 
-        WHERE gs_lit.NAZW LIKE '%59+971.37%' AND gs_lit.nazw NOT LIKE '59+971.37/MS-100/13' AND gs_lit.seria is not NULL GROUP BY gs_otwory.NAZW
+        WHERE gs_lit.seria is not NULL 
+        GROUP BY gs_otwory.NAZW
     """)
 
     przekroje_z_otworami = text("""
@@ -175,7 +174,7 @@ def merge_db_data():
                 ROW_NUMBER() OVER (PARTITION BY gs_lit.NAZW ORDER BY gs_lit.strop) AS rn
             FROM gs_lit
             INNER JOIN gs_otwory ON gs_lit.nazw = gs_otwory.nazw 
-            WHERE gs_lit.NAZW LIKE '%59+971.37%' AND gs_lit.nazw NOT LIKE '59+971.37/MS-100/13' AND gs_lit.seria IS NOT NULL
+            WHERE gs_lit.seria IS NOT NULL
         ),
         islands AS (
             SELECT *,
