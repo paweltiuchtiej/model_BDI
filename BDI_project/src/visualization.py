@@ -141,6 +141,18 @@ def add_orientations_3d(plotter, df_orient, scale_xy=10, scale_z=20, factor=20):
 
     plotter.add_mesh(glyphs, color="red")
 
+def remove_basement(grid, colors_rgb):
+    """Usuwa warstwę basement (najwyższe lithology ID) z gridu."""
+    lith = grid["lithology"].astype(int)
+    basement_id = np.max(lith)
+    mask = lith != basement_id
+    filtered = grid.extract_points(mask, adjacent_cells=True)
+
+    # lithology przetrwa extract_points, ale rgb trzeba przeliczyć na nowej topologii
+    lith_ids = np.clip(filtered["lithology"].astype(int) - 1, 0, len(colors_rgb) - 1)
+    filtered.point_data["rgb"] = (np.clip(colors_rgb[lith_ids], 0, 1) * 255).astype(np.uint8)
+    return filtered
+
 def plot_model_3d(geo_model, df_przekroje_z_otworami, df_boreholes, nazwa_przekroju=None, z_default=240, scale_xy=10, scale_z=20, df_surface=None, df_orient=None):
     """Rysuje model 3D z przekrojem wzdłuż wybranej polilinii."""
     grid = build_grid(geo_model)
@@ -161,7 +173,8 @@ def plot_model_3d(geo_model, df_przekroje_z_otworami, df_boreholes, nazwa_przekr
         grid_exag, polyline_scaled = scale_geometry(grid, polyline, scale_xy, scale_z)
         curtain_3d = build_curtain(grid_exag, polyline_scaled, colors_rgb)
     else:
-        grid_exag  = scale_geometry(grid, scale_xy=scale_xy, scale_z=scale_z)[0]
+        grid_exag = scale_geometry(grid, scale_xy=scale_xy, scale_z=scale_z)[0]
+        grid_exag = remove_basement(grid_exag, colors_rgb)   # <-- drop basement before rendering
         curtain_3d = None
 
     pl = pv.Plotter()

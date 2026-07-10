@@ -1,3 +1,4 @@
 bdi_venv
 __pycache__/
 BDI_project/notebooks/geomodel.pkl
+BDI_project/notebooks/geomodel6.pkl
